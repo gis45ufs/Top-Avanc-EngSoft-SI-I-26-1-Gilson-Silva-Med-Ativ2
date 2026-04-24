@@ -1,0 +1,336 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,top=2.8cm,bottom=2.5cm,left=3cm,right=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{courier}
+
+\definecolor{ufsblue}{RGB}{18,56,120}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ufsblue,
+    urlcolor=ufsblue,
+    citecolor=ufsblue,
+    pdftitle={Tutorial da Atividade 2 - LLM-as-a-Judge com PostgreSQL no Domínio Médico},
+    pdfauthor={Equipe 2 - Medicina}
+}
+
+\titleformat{\section}{\Large\bfseries\color{ufsblue}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries\color{ufsblue}}{\thesubsection}{0.6em}{}
+
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.25em}
+\onehalfspacing
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Tutorial - Atividade 2}
+\fancyhead[R]{\footnotesize Equipe 2 - Medicina}
+\fancyfoot[C]{\thepage\ de \pageref{LastPage}}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible
+}
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+    \vspace*{0.5cm}
+    {\small \textbf{SERVIÇO PÚBLICO FEDERAL}}\\
+    {\small \textbf{UNIVERSIDADE FEDERAL DE SERGIPE}}\\
+    {\small \textbf{PROGRAMA DE PÓS-GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO}}\\[1.2cm]
+
+    {\large \textbf{TÓPICOS AVANÇADOS EM ENGENHARIA DE SOFTWARE E SI I}}\\[0.5cm]
+
+    {\LARGE \textbf{Atividade 2}}\\[0.3cm]
+    {\Large Implementação de Framework LLM-as-a-Judge e Persistência em Banco de Dados Relacional}\\[0.8cm]
+
+    {\large \textbf{Tutorial de Restore, Execução e Análise}}\\[1.2cm]
+
+    \begin{tabular}{>{\bfseries}l l}
+    Equipe: & Equipe 2 - Medicina \\
+    Domínio: & Médico \\
+    Datasets: & K-QA e USMLE com gabarito \\
+    \end{tabular}
+
+    \vfill
+
+    São Cristóvão -- SE\\
+    2026
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introdução}
+
+Este tutorial documenta a implementação da Atividade 2 da disciplina Tópicos Avançados em Engenharia de Software e SI I, com foco no paradigma LLM-as-a-Judge no domínio médico. O objetivo foi construir um pipeline auditável e reproduzível para armazenar datasets, respostas geradas na Atividade 1, avaliações humanas e avaliações realizadas por um modelo Juiz-IA em um banco de dados PostgreSQL.
+
+\section{Objetivo}
+
+O objetivo deste material é permitir que qualquer avaliador:
+\begin{itemize}[leftmargin=1.1cm]
+    \item compreenda a arquitetura da solução;
+    \item recrie o banco de dados localmente;
+    \item execute o pipeline principal;
+    \item rode as queries de análise;
+    \item verifique a correlação entre o Juiz-IA e a avaliação humana.
+\end{itemize}
+
+\section{Datasets utilizados}
+
+Os datasets utilizados no domínio médico foram:
+\begin{itemize}[leftmargin=1.1cm]
+    \item \textbf{K-QA}: conjunto de questões abertas com resposta ouro;
+    \item \textbf{USMLE com gabarito}: conjunto de questões de múltipla escolha.
+\end{itemize}
+
+\section{Artefatos herdados da Atividade 1}
+
+A base da Atividade 2 reutiliza os seguintes artefatos:
+\begin{itemize}[leftmargin=1.1cm]
+    \item curadoria das questões abertas;
+    \item curadoria das questões de múltipla escolha;
+    \item respostas dos modelos candidatos;
+    \item avaliação humana/manual das respostas abertas.
+\end{itemize}
+
+\section{Arquitetura da solução}
+
+A solução foi organizada nos seguintes blocos:
+\begin{enumerate}[leftmargin=1.1cm]
+    \item carregamento dos dados da Atividade 1;
+    \item persistência relacional em PostgreSQL;
+    \item execução do Juiz-IA;
+    \item armazenamento da nota e do reasoning;
+    \item análise estatística e geração de outputs.
+\end{enumerate}
+
+\section{Modelagem do banco de dados}
+
+O banco foi estruturado para armazenar:
+\begin{itemize}[leftmargin=1.1cm]
+    \item metadados dos modelos candidatos e do juiz;
+    \item datasets;
+    \item perguntas e resposta ouro;
+    \item alternativas das múltipla escolha;
+    \item respostas geradas na Atividade 1;
+    \item avaliações humanas;
+    \item avaliações do Juiz-IA.
+\end{itemize}
+
+\subsection{Tabelas principais}
+
+\begin{itemize}[leftmargin=1.1cm]
+    \item \texttt{modelos}
+    \item \texttt{datasets}
+    \item \texttt{perguntas}
+    \item \texttt{alternativas}
+    \item \texttt{respostas\_atividade\_1}
+    \item \texttt{avaliacoes\_humanas\_atividade\_1}
+    \item \texttt{avaliacoes\_juiz}
+\end{itemize}
+
+\section{Rubrica do Juiz-IA}
+
+A rubrica adotada utiliza escala de 1 a 5 e prioriza segurança clínica acima de fluidez textual.
+
+\begin{itemize}[leftmargin=1.1cm]
+    \item \textbf{1}: erro crítico, conduta perigosa, dosagem incorreta ou omissão grave;
+    \item \textbf{2}: parcialmente correta, mas com falhas importantes de segurança;
+    \item \textbf{3}: correta, porém incompleta;
+    \item \textbf{4}: muito boa e clinicamente adequada;
+    \item \textbf{5}: excelente, segura e altamente alinhada ao padrão-ouro.
+\end{itemize}
+
+\section{Prompt do Juiz}
+
+O prompt do Juiz-IA foi mantido em inglês, conforme estratégia metodológica adotada para o domínio médico.
+
+\begin{lstlisting}
+[PERSONA]
+You are a senior medical evaluator and clinical educator with expertise in evidence-based medicine, patient safety, pharmacology, and differential diagnosis.
+
+[GOAL]
+Your task is to evaluate a candidate AI response to a medical question by comparing it against the gold-standard reference answer.
+
+[CONTEXT]
+Medical Question / Clinical Case:
+{question}
+
+Gold-Standard Reference Answer:
+{gold_answer}
+
+Candidate AI Response:
+{candidate_answer}
+
+[SCORING RUBRIC]
+Score 1:
+Critical error. The answer recommends a dangerous action, wrong medication, harmful dosage, ignores red flags, or shows a major diagnostic misunderstanding.
+
+Score 2:
+Partially correct conclusion, but omits essential safety steps, mandatory workup, key contraindications, or important differential diagnoses.
+
+Score 3:
+Clinically acceptable and broadly correct, but incomplete. It lacks important follow-up details, relevant nuance, or stronger alignment with the gold standard.
+
+Score 4:
+Very good answer. Clinically sound, well aligned with the gold standard, and demonstrates good medical reasoning with no relevant safety concerns.
+
+Score 5:
+Excellent answer. Fully aligned or superior to the gold standard in clarity, clinical precision, safety, and pharmacologic accuracy.
+
+[OUTPUT FORMAT]
+REASONING: <technical justification in English>
+SCORE: <integer from 1 to 5>
+\end{lstlisting}
+
+\section{Execução do banco}
+
+\subsection{Criação do banco}
+
+Exemplo de criação:
+\begin{lstlisting}
+createdb -U postgres atividade2_med
+\end{lstlisting}
+
+\subsection{Execução do schema}
+
+\begin{lstlisting}
+psql -U postgres -d atividade2_med -f sql/01_schema.sql
+\end{lstlisting}
+
+\subsection{Carga inicial}
+
+\begin{lstlisting}
+psql -U postgres -d atividade2_med -f sql/02_seed.sql
+\end{lstlisting}
+
+\section{ETL da Atividade 1 para a Atividade 2}
+
+O script \texttt{etl\_atividade2.py} é responsável por:
+\begin{itemize}[leftmargin=1.1cm]
+    \item carregar os CSVs e JSONs da Atividade 1;
+    \item inserir perguntas abertas e múltipla escolha;
+    \item inserir alternativas;
+    \item inserir respostas dos modelos candidatos;
+    \item inserir avaliações humanas.
+\end{itemize}
+
+Execução:
+\begin{lstlisting}
+python scripts/etl_atividade2.py
+\end{lstlisting}
+
+\section{Execução do Juiz-IA}
+
+Após o ETL, o script \texttt{executar\_juiz.py} deve:
+\begin{itemize}[leftmargin=1.1cm]
+    \item buscar respostas ainda não julgadas;
+    \item montar o prompt do juiz;
+    \item chamar o modelo juiz;
+    \item fazer parsing da saída;
+    \item salvar \texttt{REASONING} e \texttt{SCORE}.
+\end{itemize}
+
+Execução:
+\begin{lstlisting}
+python scripts/executar_juiz.py
+\end{lstlisting}
+
+\section{Conversão da avaliação humana}
+
+Como a Atividade 1 usou escala total de 0 a 10 e a Atividade 2 usa escala de 1 a 5, foi adotada a seguinte regra de conversão:
+
+\begin{itemize}[leftmargin=1.1cm]
+    \item 9--10 $\rightarrow$ 5
+    \item 7--8 $\rightarrow$ 4
+    \item 5--6 $\rightarrow$ 3
+    \item 3--4 $\rightarrow$ 2
+    \item 0--2 $\rightarrow$ 1
+\end{itemize}
+
+\section{Análise estatística}
+
+A análise principal compara:
+\begin{itemize}[leftmargin=1.1cm]
+    \item nota humana convertida para 1 a 5;
+    \item nota atribuída pelo Juiz-IA.
+\end{itemize}
+
+A métrica utilizada é a correlação de Spearman.
+
+Execução:
+\begin{lstlisting}
+python scripts/calcular_correlacao.py
+\end{lstlisting}
+
+\section{Queries de análise}
+
+Exemplos de queries:
+\begin{itemize}[leftmargin=1.1cm]
+    \item contagem de perguntas por dataset;
+    \item total de respostas por modelo candidato;
+    \item média das notas do juiz por modelo;
+    \item pares humano versus juiz;
+    \item casos com possível falha do juiz.
+\end{itemize}
+
+\section{Backup do banco}
+
+Geração do backup:
+\begin{lstlisting}
+pg_dump -U postgres -d atividade2_med -f backup/backup_atividade_2.sql
+\end{lstlisting}
+
+\section{Restore do banco}
+
+Para recriar o banco localmente:
+\begin{lstlisting}
+createdb -U postgres atividade2_med_restore
+psql -U postgres -d atividade2_med_restore -f backup/backup_atividade_2.sql
+\end{lstlisting}
+
+\section{Checklist de auditoria}
+
+Antes da entrega final, verificar:
+\begin{itemize}[leftmargin=1.1cm]
+    \item se o banco contém os dados esperados;
+    \item se as chaves estrangeiras estão preservadas;
+    \item se o backup restaura corretamente;
+    \item se os scripts executam sem erro;
+    \item se as queries principais funcionam;
+    \item se o vídeo e o README estão atualizados.
+\end{itemize}
+
+\section{Conclusão}
+
+A Atividade 2 transforma os artefatos da Atividade 1 em um experimento auditável e escalável, permitindo armazenar, julgar e analisar respostas de modelos em um domínio crítico. O uso de PostgreSQL e do paradigma LLM-as-a-Judge reforça a rastreabilidade dos resultados e a capacidade de auditoria do processo de avaliação.
+
+\end{document}
