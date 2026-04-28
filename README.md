@@ -10,7 +10,7 @@ A proposta central é transformar os artefatos da Atividade 1 em uma infraestrut
 
 ## 🎯 Objetivo
 
-Transformar os artefatos da Atividade 1 em uma infraestrutura auditável, rastreável e escalável, capaz de:
+Transformar os artefatos da [Atividade 1](https://github.com/gis45ufs/Top-Avanc-EngSoft-SI-I-26-1-Gilson-Inacio-Silva-Med-Ativ1) em uma infraestrutura auditável, rastreável e escalável, capaz de:
 
 - **Persistência Relacional:** armazenar datasets, questões, respostas candidatas, modelos avaliados e avaliações no PostgreSQL.
 - **Auditoria Semântica Real:** implementar um **Juiz Neutro** para avaliar acurácia técnica, segurança clínica e alinhamento ao Gold Standard.
@@ -33,6 +33,20 @@ O projeto utiliza datasets derivados da Atividade 1, com foco em perguntas clín
 |---|---|---|
 | K-QA | Questões abertas | IDs 86 a 100 |
 | USMLE | Questões de múltipla escolha com gabarito | IDs 136 a 162 |
+
+### Arquivos de entrada na pasta `data/`
+
+A pasta `data/` contém os arquivos originais e derivados da [Atividade 1](https://github.com/gis45ufs/Top-Avanc-EngSoft-SI-I-26-1-Gilson-Inacio-Silva-Med-Ativ1) utilizados como entrada para o ETL da Atividade 2:
+
+| Arquivo | Finalidade |
+|---|---|
+| `avaliacao_llms.csv` | Avaliações humanas/curadas das respostas dos LLMs na Atividade 1 |
+| `curadoria_abertas.csv` | Curadoria das questões abertas do dataset K-QA |
+| `curadoria_mc.csv` | Curadoria das questões de múltipla escolha do dataset USMLE |
+| `dataset.json` | Dataset base com questões abertas |
+| `questions_w_answers.jsonl` | Questões com respostas de referência em formato JSONL |
+| `respostas_llms.csv` | Respostas geradas pelos modelos candidatos |
+| `usmle_questions.json` | Dataset de questões USMLE |
 
 ### Recorte efetivo da auditoria
 
@@ -86,27 +100,34 @@ A rubrica prioriza não apenas a similaridade textual com a resposta de referên
 
 ```plaintext
 Atividade_2/
-├── README.md                    # Este arquivo
-├── .env                         # Chaves de API e configurações do banco
-├── .env.example                 # Exemplo de configuração de ambiente
-├── data/                        # Datasets originais da Atividade 1
+├── README.md                         # Este arquivo
+├── .env                              # Chaves de API e configurações do banco
+├── .env.example                      # Exemplo de configuração de ambiente
+├── data/                             # Datasets e arquivos derivados da Atividade 1
+│   ├── avaliacao_llms.csv            # Avaliações humanas/curadas dos LLMs
+│   ├── curadoria_abertas.csv         # Curadoria das questões abertas K-QA
+│   ├── curadoria_mc.csv              # Curadoria das questões de múltipla escolha USMLE
+│   ├── dataset.json                  # Dataset base de questões abertas
+│   ├── questions_w_answers.jsonl     # Questões com respostas de referência
+│   ├── respostas_llms.csv            # Respostas geradas pelos modelos candidatos
+│   └── usmle_questions.json          # Questões USMLE
 ├── prompts/
-│   └── juiz_medico_en.txt       # Rubrica médica robusta utilizada pelo juiz
+│   └── juiz_medico_en.txt            # Rubrica médica robusta utilizada pelo juiz
 ├── sql/
-│   ├── 01_schema.sql            # DDL: tabelas, chaves e constraints
-│   ├── 02_seed.sql              # DML: carga inicial de modelos e datasets
-│   └── 03_queries_analise.sql   # Consultas analíticas
+│   ├── 01_schema.sql                 # DDL: tabelas, chaves e constraints
+│   ├── 02_seed.sql                   # DML: carga inicial de modelos e datasets
+│   └── 03_queries_analise.sql        # Consultas analíticas
 ├── scripts/
-│   ├── etl_atividade2.py        # Migração dos artefatos da Atividade 1 para PostgreSQL
-│   ├── executar_juiz.py         # Motor de auditoria integrado à API da Groq
-│   └── calcular_correlacao.py   # Cálculo das correlações estatísticas
-├── outputs/                     # Relatórios e dados brutos (n=45)
-│   ├── avaliacoes_juiz.csv      # Exportação bruta das notas do juiz
-│   ├── pares_humano_vs_juiz.csv # Pares comparativos entre avaliação humana e juiz
-│   ├── correlacao_spearman.csv  # Métricas de correlação de Spearman
-│   └── analise_erros.csv        # Análise qualitativa/quantitativa de erros
+│   ├── etl_atividade2.py             # Migração dos artefatos da Atividade 1 para PostgreSQL
+│   ├── executar_juiz.py              # Motor de auditoria com CLI robusta
+│   └── calcular_correlacao.py        # Cálculo das correlações estatísticas
+├── outputs/                          # Relatórios e dados brutos finais (n=45)
+│   ├── avaliacoes_juiz.csv           # Exportação bruta das notas do juiz
+│   ├── pares_humano_vs_juiz.csv      # Pares comparativos entre avaliação humana e juiz
+│   ├── correlacao_spearman.csv       # Métricas de correlação de Spearman
+│   └── analise_erros.csv             # Análise qualitativa/quantitativa de erros
 ├── backup/
-│   └── backup_atividade_2.sql   # Backup do banco de dados
+│   └── backup_atividade_2.sql        # Backup do banco de dados
 └── tutorial/
     ├── Tutorial_Atividade_2.tex
     └── Tutorial_Atividade_2.pdf
@@ -248,6 +269,7 @@ GROQ_API_KEY=sua_chave_groq
 ### 3. Executar o ETL
 
 ```bash
+# Executa a carga de dados
 python scripts/etl_atividade2.py
 ```
 
@@ -256,14 +278,15 @@ python scripts/etl_atividade2.py
 > Esta etapa requer a variável `GROQ_API_KEY` configurada corretamente no arquivo `.env`.
 
 ```bash
+# Executa o Juiz Neutro na Groq
 python scripts/executar_juiz.py --backend custom
 ```
 
 O script também suporta flags adicionais, como:
 
 ```bash
-python scripts/executar_juiz.py --backend custom --limit 5
-python scripts/executar_juiz.py --backend custom --dry-run
+python scripts/executar_juiz.py --backend custom --limit 5 - (avalia só 5 questões por exemplo)
+python scripts/executar_juiz.py --backend custom --dry-run - (testa sem salvar no banco)
 ```
 
 ### 5. Gerar estatísticas e CSVs
