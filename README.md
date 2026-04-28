@@ -394,8 +394,7 @@ A implementação contempla:
 | Autor | Gilson Inácio da Silva |
 | Área | Engenharia de Software |
 | Framework | Paradigma LLM-as-a-Judge |
-| Datasets | K-QA e USMLE |
-| Dataset K-QA | K-QA / Itaymanes |
+| Datasets | K-QA (Itaymanes) e USMLE |
 | Disciplina | Tópicos Avançados em Engenharia de Software e SI I |
 | Instituição | Universidade Federal de Sergipe — UFS |
 | Ano | 2026 |
