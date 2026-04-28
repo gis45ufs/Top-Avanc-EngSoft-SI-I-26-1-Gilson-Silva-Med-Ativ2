@@ -200,6 +200,7 @@ def save_outputs(df_pairs: pd.DataFrame, df_corr: pd.DataFrame, df_errors: pd.Da
     df_pairs.to_csv(OUTPUT_DIR / "pares_humano_vs_juiz.csv", index=False, encoding="utf-8-sig")
     df_corr.to_csv(OUTPUT_DIR / "correlacao_spearman.csv", index=False, encoding="utf-8-sig")
     df_errors.to_csv(OUTPUT_DIR / "analise_erros.csv", index=False, encoding="utf-8-sig")
+    df_pairs.to_csv(OUTPUT_DIR / "avaliacoes_juiz.csv", index=False, encoding="utf-8-sig")
 
 
 def print_summary(df_corr: pd.DataFrame):
