@@ -5,7 +5,7 @@
 \usepackage[brazil]{babel}
 \usepackage{lmodern}
 \usepackage{microtype}
-\usepackage[a4paper,top=2.8cm,bottom=2.5cm,left=3cm,right=2.5cm]{geometry}
+\usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -15,74 +15,94 @@
 \usepackage{setspace}
 \usepackage{hyperref}
 \usepackage{xcolor}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{titlesec}
-\usepackage{fancyhdr}
-\usepackage{lastpage}
-\usepackage{amsmath}
 \usepackage{listings}
-\usepackage{courier}
-
-\definecolor{ufsblue}{RGB}{18,56,120}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{ragged2e}
 
 \hypersetup{
     colorlinks=true,
-    linkcolor=ufsblue,
-    urlcolor=ufsblue,
-    citecolor=ufsblue,
-    pdftitle={Tutorial da Atividade 2 - LLM-as-a-Judge com PostgreSQL no Domínio Médico},
-    pdfauthor={Equipe 2 - Medicina}
+    linkcolor=blue!50!black,
+    urlcolor=blue!50!black,
+    pdftitle={Tutorial_Atividade_2},
+    pdfauthor={Gilson Inácio da Silva},
+    pdfsubject={Atividade 2 - LLM-as-a-Judge com PostgreSQL},
+    pdfcreator={pdflatex}
 }
 
-\titleformat{\section}{\Large\bfseries\color{ufsblue}}{\thesection}{0.7em}{}
-\titleformat{\subsection}{\large\bfseries\color{ufsblue}}{\thesubsection}{0.6em}{}
+\definecolor{codebg}{RGB}{247,247,247}
+\definecolor{codeframe}{RGB}{220,220,220}
+\definecolor{deepblue}{RGB}{25,55,109}
 
-\setlength{\parindent}{1.25cm}
-\setlength{\parskip}{0.25em}
-\onehalfspacing
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\footnotesize Tutorial - Atividade 2}
-\fancyhead[R]{\footnotesize Equipe 2 - Medicina}
-\fancyfoot[C]{\thepage\ de \pageref{LastPage}}
-
-\lstset{
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{codebg},
+    frame=single,
+    rulecolor=\color{codeframe},
     basicstyle=\ttfamily\small,
     breaklines=true,
-    frame=single,
-    columns=fullflexible
+    breakatwhitespace=false,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    upquote=true,
+    tabsize=2,
+    xleftmargin=4pt,
+    xrightmargin=4pt
 }
+\lstset{style=mystyle}
+
+\setstretch{1.15}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.2cm}
+
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Tutorial - Atividade 2}
+\fancyhead[R]{Gilson Inácio da Silva}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{deepblue}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{deepblue}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\color{deepblue}}{\thesubsubsection}{0.6em}{}
+
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 
 \begin{document}
 
 \begin{titlepage}
-\thispagestyle{empty}
-\begin{center}
-    \vspace*{0.5cm}
-    {\small \textbf{SERVIÇO PÚBLICO FEDERAL}}\\
-    {\small \textbf{UNIVERSIDADE FEDERAL DE SERGIPE}}\\
-    {\small \textbf{PROGRAMA DE PÓS-GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO}}\\[1.2cm]
+    \centering
+    \vspace*{1.5cm}
 
-    {\large \textbf{TÓPICOS AVANÇADOS EM ENGENHARIA DE SOFTWARE E SI I}}\\[0.5cm]
+    {\large \textbf{SERVIÇO PÚBLICO FEDERAL}}\\[0.25cm]
+    {\large \textbf{UNIVERSIDADE FEDERAL DE SERGIPE}}\\[0.25cm]
+    {\large \textbf{PROGRAMA DE PÓS-GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO}}\\[0.7cm]
 
-    {\LARGE \textbf{Atividade 2}}\\[0.3cm]
-    {\Large Implementação de Framework LLM-as-a-Judge e Persistência em Banco de Dados Relacional}\\[0.8cm]
+    {\Large \textbf{TÓPICOS AVANÇADOS EM ENGENHARIA DE}}\\[0.1cm]
+    {\Large \textbf{SOFTWARE E SI I}}\\[1.0cm]
 
-    {\large \textbf{Tutorial de Restore, Execução e Análise}}\\[1.2cm]
+    {\Huge \textbf{Atividade 2}}\\[0.4cm]
+    {\Large \textbf{Implementação de Framework LLM-as-a-Judge e Persistência em}}\\[0.15cm]
+    {\Large \textbf{Banco de Dados Relacional}}\\[0.6cm]
+    {\Large \textbf{Tutorial de Restore, Execução e Análise}}\\[1.2cm]
 
-    \begin{tabular}{>{\bfseries}l l}
-    Equipe: & Equipe 2 - Medicina \\
-    Domínio: & Médico \\
-    Datasets: & K-QA e USMLE com gabarito \\
+    \begin{tabular}{rl}
+        \textbf{Autor:} & Gilson Inácio da Silva \\
+        \textbf{Disciplina:} & Tópicos Avançados em Engenharia de Software e SI I \\
+        \textbf{Programa:} & Pós-Graduação em Ciência da Computação \\
+        \textbf{Instituição:} & Universidade Federal de Sergipe - UFS \\
+        \textbf{Equipe:} & Equipe 2 - Medicina \\
+        \textbf{Domínio:} & Médico \\
+        \textbf{Datasets:} & K-QA e USMLE com gabarito \\
+        \textbf{Ano:} & 2026 \\
     \end{tabular}
 
     \vfill
-
-    São Cristóvão -- SE\\
-    2026
-\end{center}
+    {\large São Cristóvão - SE}\\[0.2cm]
+    {\large 2026}
 \end{titlepage}
 
 \tableofcontents
@@ -90,95 +110,224 @@
 
 \section{Introdução}
 
-Este tutorial documenta a implementação da Atividade 2 da disciplina Tópicos Avançados em Engenharia de Software e SI I, com foco no paradigma LLM-as-a-Judge no domínio médico. O objetivo foi construir um pipeline auditável e reproduzível para armazenar datasets, respostas geradas na Atividade 1, avaliações humanas e avaliações realizadas por um modelo Juiz-IA em um banco de dados PostgreSQL.
+Este tutorial documenta a versão \textbf{final e definitiva} da \textbf{Atividade 2} da disciplina \textbf{Tópicos Avançados em Engenharia de Software e SI I}, com foco na implementação de um framework \textit{LLM-as-a-Judge} com persistência em \textbf{PostgreSQL} no \textbf{domínio médico}. O objetivo do projeto é transformar os artefatos produzidos na Atividade 1 em um experimento auditável, reprodutível, rastreável e estatisticamente analisável.
+
+Na versão final do projeto, o backend heurístico e de teste foi abandonado. O ciclo definitivo passou a utilizar um \textbf{Juiz Neutro} de alta capacidade via API da Groq, operando com temperatura zero, cadeia de raciocínio explícita e rubrica clínica estruturada. Assim, o processo de auditoria deixou de ser apenas uma prova de conceito de pipeline para se tornar um fluxo completo de avaliação semântica com preservação de justificativa, nota, resultados estatísticos, backup e restore.
+
+O presente material foi reescrito para refletir \textbf{apenas} a versão consolidada do projeto. Qualquer referência a modo \texttt{mock} deve ser entendida como parte de fases preliminares já superadas, não como parte da entrega final.
 
 \section{Objetivo}
 
-O objetivo deste material é permitir que qualquer avaliador:
-\begin{itemize}[leftmargin=1.1cm]
-    \item compreenda a arquitetura da solução;
-    \item recrie o banco de dados localmente;
-    \item execute o pipeline principal;
-    \item rode as queries de análise;
-    \item verifique a correlação entre o Juiz-IA e a avaliação humana.
+O objetivo central da Atividade 2 foi construir uma infraestrutura capaz de:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item armazenar datasets, perguntas, respostas candidatas, avaliações humanas e avaliações automatizadas em um banco relacional;
+    \item implementar um juiz neutro para comparar respostas candidatas com uma referência padrão-ouro;
+    \item registrar \textit{Chain-of-Thought} do juiz e a nota final em escala de 1 a 5;
+    \item calcular métricas de concordância entre avaliação humana e avaliação automática por meio da correlação de Spearman;
+    \item garantir reprodutibilidade por meio de scripts, documentação, backup e restore do experimento.
 \end{itemize}
+
+Do ponto de vista de Engenharia de Software, a atividade consolida práticas de integração entre camada de dados, scripts de ETL, inferência com modelo externo, persistência de resultados e auditoria estatística.
 
 \section{Datasets utilizados}
 
-Os datasets utilizados no domínio médico foram:
-\begin{itemize}[leftmargin=1.1cm]
-    \item \textbf{K-QA}: conjunto de questões abertas com resposta ouro;
-    \item \textbf{USMLE com gabarito}: conjunto de questões de múltipla escolha.
+O experimento foi executado no domínio \textbf{médico}, reutilizando artefatos da Atividade 1. Dois conjuntos principais foram utilizados:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{K-QA}: conjunto de questões abertas com resposta de referência;
+    \item \textbf{USMLE com gabarito}: conjunto de questões de múltipla escolha com alternativa correta conhecida.
 \end{itemize}
+
+O recorte efetivamente consolidado na execução final foi composto por:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{15 questões abertas} do K-QA, correspondentes aos IDs 86 a 100;
+    \item \textbf{27 questões de múltipla escolha} do USMLE, correspondentes aos IDs 136 a 162;
+    \item \textbf{45 respostas candidatas abertas} julgadas, oriundas da combinação de 15 questões abertas com 3 modelos candidatos.
+\end{itemize}
+
+A análise de correlação incidiu sobre as \textbf{45 respostas reais} do recorte aberto, pois é nesse subconjunto que existiam avaliação humana estruturada e resposta automatizada do juiz para comparação estatística.
 
 \section{Artefatos herdados da Atividade 1}
 
-A base da Atividade 2 reutiliza os seguintes artefatos:
-\begin{itemize}[leftmargin=1.1cm]
-    \item curadoria das questões abertas;
-    \item curadoria das questões de múltipla escolha;
-    \item respostas dos modelos candidatos;
-    \item avaliação humana/manual das respostas abertas.
+A Atividade 2 não recriou as respostas da Atividade 1, mas sim herdou e reorganizou seus artefatos. Os principais insumos foram:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item curadoria das questões abertas em \texttt{curadoria\_abertas.csv};
+    \item curadoria das questões de múltipla escolha em \texttt{curadoria\_mc.csv};
+    \item respostas dos modelos candidatos em \texttt{respostas\_llms.csv};
+    \item avaliações humanas estruturadas em \texttt{avaliacao\_llms.csv};
+    \item arquivos-base \texttt{dataset.json}, \texttt{questions\_w\_answers.jsonl} e \texttt{usmle\_questions.json}.
 \end{itemize}
+
+Esses arquivos foram normalizados e migrados para o PostgreSQL, tornando o experimento consultável por SQL e auditável por meio de relacionamentos explícitos.
 
 \section{Arquitetura da solução}
 
-A solução foi organizada nos seguintes blocos:
-\begin{enumerate}[leftmargin=1.1cm]
-    \item carregamento dos dados da Atividade 1;
-    \item persistência relacional em PostgreSQL;
-    \item execução do Juiz-IA;
-    \item armazenamento da nota e do reasoning;
-    \item análise estatística e geração de outputs.
+\subsection{Visão geral do pipeline}
+
+A solução final foi organizada em cinco blocos principais:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item \textbf{Ingestão}: leitura dos artefatos da Atividade 1 por meio do ETL;
+    \item \textbf{Persistência relacional}: organização das entidades do experimento em PostgreSQL;
+    \item \textbf{Auditoria com Juiz Neutro}: chamada à API da Groq com o modelo \texttt{llama-3.3-70b-versatile};
+    \item \textbf{Armazenamento das avaliações}: gravação da justificativa técnica e da nota atribuída pelo juiz;
+    \item \textbf{Análise estatística e evidências}: geração de CSVs, backup e restore.
 \end{enumerate}
+
+\subsection{Juiz neutro e justificativa técnica}
+
+A versão final abandonou o backend local de teste e adotou como juiz o modelo \texttt{llama-3.3-70b-versatile}, consumido via API da Groq. Essa escolha foi motivada por três razões principais:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Capacidade}: trata-se de um modelo de classe alta, com 70 bilhões de parâmetros, mais adequado para avaliação crítica do que modelos compactos ou quantizados;
+    \item \textbf{Neutralidade}: o uso de um modelo distinto dos candidatos reduz \textit{Self-Preference Bias}, isto é, o risco de um modelo favorecer respostas semelhantes ao seu próprio estilo;
+    \item \textbf{Determinismo}: a temperatura foi definida como zero, reduzindo variabilidade aleatória e aumentando a consistência da auditoria.
+\end{itemize}
+
+Essa estratégia é metodologicamente superior a usar GPT/Claude/Gemini para avaliarem a si mesmos, porque preserva a ideia de \textbf{Juiz Neutro} e evita contaminação por auto-preferência.
 
 \section{Modelagem do banco de dados}
 
-O banco foi estruturado para armazenar:
-\begin{itemize}[leftmargin=1.1cm]
-    \item metadados dos modelos candidatos e do juiz;
-    \item datasets;
-    \item perguntas e resposta ouro;
-    \item alternativas das múltipla escolha;
-    \item respostas geradas na Atividade 1;
-    \item avaliações humanas;
-    \item avaliações do Juiz-IA.
-\end{itemize}
+\subsection{Objetivo da modelagem}
+
+A modelagem relacional foi planejada para registrar todo o ciclo de vida do experimento: origem da pergunta, dataset de procedência, resposta candidata, avaliação humana, modelo juiz, justificativa da avaliação e nota atribuída.
 
 \subsection{Tabelas principais}
 
-\begin{itemize}[leftmargin=1.1cm]
-    \item \texttt{modelos}
-    \item \texttt{datasets}
-    \item \texttt{perguntas}
-    \item \texttt{alternativas}
-    \item \texttt{respostas\_atividade\_1}
-    \item \texttt{avaliacoes\_humanas\_atividade\_1}
-    \item \texttt{avaliacoes\_juiz}
+A Tabela~\ref{tab:tabelas-principais} resume as entidades principais do banco e sua finalidade.
+
+\begin{longtable}{>{\RaggedRight\arraybackslash}p{0.28\textwidth} >{\RaggedRight\arraybackslash}p{0.64\textwidth}}
+\caption{Tabelas principais do experimento}\label{tab:tabelas-principais}\\
+\toprule
+\textbf{Tabela} & \textbf{Finalidade} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tabela} & \textbf{Finalidade} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\path{modelos} & registra modelos candidatos e modelos-juiz, incluindo papel semântico no experimento. \\
+\path{datasets} & armazena os datasets utilizados, distinguindo perguntas abertas e de múltipla escolha. \\
+\path{perguntas} & guarda enunciado, resposta ouro e metadados da pergunta. \\
+\path{alternativas} & persiste as opções das questões de múltipla escolha. \\
+\path{respostas_atividade_1} & registra as respostas candidatas herdadas da Atividade 1. \\
+\path{avaliacoes_humanas_atividade_1} & persiste a avaliação humana estruturada e sua conversão para a escala de 1 a 5. \\
+\path{avaliacoes_juiz} & registra a avaliação automatizada do juiz, incluindo nota, justificativa e data da auditoria. \\
+\end{longtable}
+
+\subsection{Relacionamentos essenciais}
+
+Os relacionamentos principais do modelo são:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item cada registro em \path{perguntas} pertence a um dataset em \path{datasets};
+    \item cada resposta em \path{respostas_atividade_1} referencia uma pergunta e um modelo candidato;
+    \item cada avaliação humana referencia exatamente uma resposta candidata;
+    \item cada avaliação do juiz referencia uma resposta candidata e um modelo juiz.
 \end{itemize}
+
+Essa organização assegura rastreabilidade e permite reprocessar estatísticas sem ambiguidade.
+
+\section{Estrutura do projeto}
+
+A organização física da pasta \texttt{Atividade\_2/} ficou conforme a estrutura consolidada do projeto final:
+
+\begin{lstlisting}[caption={Estrutura do projeto final},label={lst:estrutura-projeto}]
+Atividade_2/
+|- README.md                         # Este arquivo
+|- .env                              # Chaves de API e configuracoes do banco
+|- .env.example                      # Exemplo de configuracao de ambiente
+|- data/                             # Datasets e arquivos derivados da Atividade 1
+|  |- avaliacao_llms.csv             # Avaliacoes humanas/curadas dos LLMs
+|  |- curadoria_abertas.csv          # Curadoria das questoes abertas K-QA
+|  |- curadoria_mc.csv               # Curadoria das questoes de multipla escolha USMLE
+|  |- dataset.json                   # Dataset base de questoes abertas
+|  |- questions_w_answers.jsonl      # Questoes com respostas de referencia
+|  |- respostas_llms.csv             # Respostas geradas pelos modelos candidatos
+|  \- usmle_questions.json           # Questoes USMLE
+|- prompts/
+|  \- juiz_medico_en.txt            # Rubrica medica robusta utilizada pelo juiz
+|- sql/
+|  |- 01_schema.sql                  # DDL: tabelas, chaves e constraints
+|  |- 02_seed.sql                    # DML: carga inicial de modelos e datasets
+|  \- 03_queries_analise.sql        # Consultas analiticas
+|- scripts/
+|  |- etl_atividade2.py              # Migracao dos artefatos da Atividade 1
+|  |- executar_juiz.py               # Motor de auditoria com CLI robusta
+|  \- calcular_correlacao.py        # Calculo das correlacoes estatisticas
+|- outputs/
+|  |- avaliacoes_juiz.csv            # Exportacao bruta das notas do juiz
+|  |- pares_humano_vs_juiz.csv       # Pares comparativos entre avaliacao humana e juiz
+|  |- correlacao_spearman.csv        # Metricas de correlacao de Spearman
+|  \- analise_erros.csv             # Analise qualitativa/quantitativa de erros
+|- backup/
+|  \- backup_atividade_2.sql        # Backup do banco de dados
+\- tutorial/
+   |- Tutorial_Atividade_2.tex
+   \- Tutorial_Atividade_2.pdf
+\end{lstlisting}
+
+A inclusão dessa estrutura no tutorial torna mais fácil a reprodução do experimento por terceiros e evita ambiguidades sobre o papel de cada pasta.
 
 \section{Rubrica do Juiz-IA}
 
-A rubrica adotada utiliza escala de 1 a 5 e prioriza segurança clínica acima de fluidez textual.
+A rubrica do juiz utiliza escala de 1 a 5 e foi concebida para privilegiar \textbf{segurança clínica}, \textbf{adequação técnica} e \textbf{alinhamento com o padrão-ouro}. A qualidade literária da resposta não é tratada como o critério central; o fator dominante é o risco clínico associado ao conteúdo.
 
-\begin{itemize}[leftmargin=1.1cm]
-    \item \textbf{1}: erro crítico, conduta perigosa, dosagem incorreta ou omissão grave;
-    \item \textbf{2}: parcialmente correta, mas com falhas importantes de segurança;
-    \item \textbf{3}: correta, porém incompleta;
-    \item \textbf{4}: muito boa e clinicamente adequada;
-    \item \textbf{5}: excelente, segura e altamente alinhada ao padrão-ouro.
-\end{itemize}
+\begin{longtable}{>{\RaggedRight\arraybackslash}p{0.12\textwidth} >{\RaggedRight\arraybackslash}p{0.80\textwidth}}
+\caption{Rubrica de avaliação do juiz}\label{tab:rubrica}\\
+\toprule
+\textbf{Score} & \textbf{Interpretação} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Score} & \textbf{Interpretação} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1 & erro crítico, conduta perigosa, dosagem errada, contraindicação ignorada ou omissão grave com potencial de dano. \\
+2 & resposta parcialmente correta, mas com falhas relevantes de segurança, exames obrigatórios omitidos, red flags ignoradas ou risco clínico importante. \\
+3 & resposta clinicamente aceitável, porém incompleta, genérica ou parcialmente desalinhada ao padrão-ouro. \\
+4 & resposta muito boa, tecnicamente adequada, segura e bem alinhada ao padrão-ouro. \\
+5 & excelência clínica: resposta totalmente alinhada ou superior ao padrão-ouro em clareza, completude, segurança e precisão farmacológica. \\
+\end{longtable}
 
 \section{Prompt do Juiz}
 
-O prompt do Juiz-IA foi mantido em inglês, conforme estratégia metodológica adotada para o domínio médico.
+\subsection{Idioma e estratégia}
 
-\begin{lstlisting}
+No domínio médico, o prompt foi mantido em \textbf{inglês} para aproveitar melhor a padronização do raciocínio clínico, da terminologia biomédica e dos critérios de julgamento. Além disso, foi exigido que o modelo produzisse explicitamente:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{REASONING}: justificativa técnica em inglês;
+    \item \texttt{SCORE}: nota inteira de 1 a 5.
+\end{itemize}
+
+Essa abordagem implementa a técnica de \textit{Chain-of-Thought}, tornando a avaliação do juiz auditável e passível de revisão humana posterior.
+
+\subsection{Estrutura conceitual do prompt}
+
+O prompt final contém os seguintes componentes lógicos:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item persona de avaliador médico sênior;
+    \item objetivo de comparar resposta candidata com resposta ouro;
+    \item contexto com pergunta, gold standard e resposta candidata;
+    \item rubrica explícita de 1 a 5;
+    \item formato obrigatório de saída com \texttt{REASONING} e \texttt{SCORE}.
+\end{itemize}
+
+\begin{lstlisting}[caption={Estrutura resumida do prompt medico em ingles},label={lst:prompt}]
 [PERSONA]
-You are a senior medical evaluator and clinical educator with expertise in evidence-based medicine, patient safety, pharmacology, and differential diagnosis.
+You are a senior medical evaluator and clinical educator...
 
 [GOAL]
-Your task is to evaluate a candidate AI response to a medical question by comparing it against the gold-standard reference answer.
+Evaluate a candidate AI response by comparing it against the gold-standard answer.
 
 [CONTEXT]
 Medical Question / Clinical Case:
@@ -191,84 +340,129 @@ Candidate AI Response:
 {candidate_answer}
 
 [SCORING RUBRIC]
-Score 1:
-Critical error. The answer recommends a dangerous action, wrong medication, harmful dosage, ignores red flags, or shows a major diagnostic misunderstanding.
-
-Score 2:
-Partially correct conclusion, but omits essential safety steps, mandatory workup, key contraindications, or important differential diagnoses.
-
-Score 3:
-Clinically acceptable and broadly correct, but incomplete. It lacks important follow-up details, relevant nuance, or stronger alignment with the gold standard.
-
-Score 4:
-Very good answer. Clinically sound, well aligned with the gold standard, and demonstrates good medical reasoning with no relevant safety concerns.
-
-Score 5:
-Excellent answer. Fully aligned or superior to the gold standard in clarity, clinical precision, safety, and pharmacologic accuracy.
+Score 1: critical error / dangerous recommendation ...
+Score 2: partially correct but unsafe or incomplete ...
+Score 3: acceptable but incomplete ...
+Score 4: very good and clinically sound ...
+Score 5: excellent and fully aligned ...
 
 [OUTPUT FORMAT]
 REASONING: <technical justification in English>
 SCORE: <integer from 1 to 5>
 \end{lstlisting}
 
-\section{Execução do banco}
+\section{Execução do banco e carga inicial}
 
 \subsection{Criação do banco}
 
-Exemplo de criação:
-\begin{lstlisting}
+A primeira etapa operacional consiste em criar o banco PostgreSQL que receberá a modelagem relacional:
+
+\begin{lstlisting}[caption={Criacao do banco PostgreSQL}]
 createdb -U postgres atividade2_med
 \end{lstlisting}
 
 \subsection{Execução do schema}
 
-\begin{lstlisting}
+Depois disso, executa-se o esquema relacional com tabelas, chaves estrangeiras, restrições e índices:
+
+\begin{lstlisting}[caption={Carga do schema relacional}]
 psql -U postgres -d atividade2_med -f sql/01_schema.sql
 \end{lstlisting}
 
-\subsection{Carga inicial}
+\subsection{Carga inicial de modelos e datasets}
 
-\begin{lstlisting}
+Em seguida, executa-se a carga inicial de modelos e datasets:
+
+\begin{lstlisting}[caption={Carga inicial de modelos e datasets}]
 psql -U postgres -d atividade2_med -f sql/02_seed.sql
 \end{lstlisting}
 
+Essa etapa registra os datasets utilizados e os modelos candidatos, além do modelo juiz usado pelo experimento final.
+
 \section{ETL da Atividade 1 para a Atividade 2}
 
-O script \texttt{etl\_atividade2.py} é responsável por:
-\begin{itemize}[leftmargin=1.1cm]
-    \item carregar os CSVs e JSONs da Atividade 1;
-    \item inserir perguntas abertas e múltipla escolha;
-    \item inserir alternativas;
-    \item inserir respostas dos modelos candidatos;
-    \item inserir avaliações humanas.
+O script \texttt{etl\_atividade2.py} foi responsável por migrar e normalizar os artefatos da Atividade 1 para a base relacional. Em termos funcionais, ele executa as seguintes tarefas:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item leitura dos arquivos CSV e JSON da pasta \texttt{data/};
+    \item identificação dos recortes válidos de K-QA e USMLE;
+    \item inserção de perguntas e resposta ouro em \path{perguntas};
+    \item inserção das alternativas das questões de múltipla escolha em \path{alternativas};
+    \item inserção das respostas candidatas em \path{respostas_atividade_1};
+    \item inserção das avaliações humanas em \path{avaliacoes_humanas_atividade_1}. 
 \end{itemize}
 
-Execução:
-\begin{lstlisting}
+O comando utilizado foi:
+
+\begin{lstlisting}[caption={Execucao do ETL}]
 python scripts/etl_atividade2.py
 \end{lstlisting}
 
-\section{Execução do Juiz-IA}
+Após a carga, os valores consolidados do banco final ficaram assim:
 
-Após o ETL, o script \texttt{executar\_juiz.py} deve:
-\begin{itemize}[leftmargin=1.1cm]
-    \item buscar respostas ainda não julgadas;
-    \item montar o prompt do juiz;
-    \item chamar o modelo juiz;
-    \item fazer parsing da saída;
-    \item salvar \texttt{REASONING} e \texttt{SCORE}.
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{42 perguntas};
+    \item \textbf{134 alternativas};
+    \item \textbf{45 respostas candidatas};
+    \item \textbf{45 avaliações humanas}. 
 \end{itemize}
 
-Execução:
-\begin{lstlisting}
-python scripts/executar_juiz.py
+\section{Execução do Juiz-IA com CLI robusta}
+
+\subsection{Comportamento do script}
+
+O script \texttt{executar\_juiz.py} compõe o centro operacional da auditoria. Ele executa o seguinte fluxo:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item conecta ao PostgreSQL;
+    \item localiza respostas ainda não julgadas pelo modelo juiz configurado;
+    \item monta o prompt do juiz com pergunta, resposta ouro e resposta candidata;
+    \item chama o backend configurado (na versão final, \texttt{custom} com Groq);
+    \item faz o parsing da saída para extrair \texttt{REASONING} e \texttt{SCORE};
+    \item salva a avaliação na tabela \path{avaliacoes_juiz}. 
+\end{enumerate}
+
+\subsection{Execução principal}
+
+Na versão final, a execução se dá por meio do comando:
+
+\begin{lstlisting}[caption={Execucao do juiz com backend real}]
+python scripts/executar_juiz.py --backend custom
 \end{lstlisting}
+
+\subsection{Flags aceitas}
+
+O script também aceita opções úteis para auditoria incremental e inspeção sem escrita no banco:
+
+\begin{lstlisting}[caption={Exemplos de flags da CLI}]
+python scripts/executar_juiz.py --backend custom --limit 5
+python scripts/executar_juiz.py --backend custom --dry-run
+\end{lstlisting}
+
+A flag \texttt{--limit} é útil para executar subconjuntos controlados da fila de avaliação. Já a flag \texttt{--dry-run} permite testar o fluxo sem persistir resultados.
+
+\section{Sanitização e limpeza do banco}
+
+Antes da geração dos resultados definitivos, foi necessário remover avaliações de teste herdadas de fases preliminares do projeto. Essa sanitização foi essencial para garantir que as métricas estatísticas finais refletissem apenas o \textbf{juiz real}.
+
+A limpeza crítica consistiu em apagar registros de teste em \path{avaliacoes_juiz}, por meio de comando SQL no estilo:
+
+\begin{lstlisting}[caption={Exemplo de limpeza dos registros de teste}]
+DELETE FROM avaliacoes_juiz
+WHERE id_modelo_juiz = (
+    SELECT id_modelo
+    FROM modelos
+    WHERE nome_modelo = 'JUDGE_MODEL'
+);
+\end{lstlisting}
+
+Com isso, os cálculos estatísticos finais passaram a considerar somente o juiz \texttt{llama-3.3-70b-versatile}.
 
 \section{Conversão da avaliação humana}
 
-Como a Atividade 1 usou escala total de 0 a 10 e a Atividade 2 usa escala de 1 a 5, foi adotada a seguinte regra de conversão:
+Como a Atividade 1 utilizava uma escala total de 0 a 10 e a Atividade 2 padronizou o julgamento para a escala de 1 a 5, foi adotada a seguinte regra de conversão:
 
-\begin{itemize}[leftmargin=1.1cm]
+\begin{itemize}[leftmargin=1.2cm]
     \item 9--10 $\rightarrow$ 5
     \item 7--8 $\rightarrow$ 4
     \item 5--6 $\rightarrow$ 3
@@ -276,61 +470,124 @@ Como a Atividade 1 usou escala total de 0 a 10 e a Atividade 2 usa escala de 1 a
     \item 0--2 $\rightarrow$ 1
 \end{itemize}
 
-\section{Análise estatística}
+Essa conversão permite comparar diretamente notas humanas e notas automatizadas sem perder a ordenação ordinal necessária ao cálculo de Spearman.
 
-A análise principal compara:
-\begin{itemize}[leftmargin=1.1cm]
-    \item nota humana convertida para 1 a 5;
-    \item nota atribuída pelo Juiz-IA.
-\end{itemize}
+\section{Análise estatística e resultados}
 
-A métrica utilizada é a correlação de Spearman.
+\subsection{Execução da estatística}
 
-Execução:
-\begin{lstlisting}
+A análise estatística foi executada por meio do script:
+
+\begin{lstlisting}[caption={Calculo das correlacoes}]
 python scripts/calcular_correlacao.py
 \end{lstlisting}
 
+Esse script gera os pares humano versus juiz, calcula a correlação de Spearman em diferentes níveis de agregação e exporta os CSVs finais da pasta \texttt{outputs/}.
+
+\subsection{Resultados consolidados}
+
+A correlação de Spearman incidiu sobre \textbf{45 respostas reais} julgadas pelo juiz final. O resultado global consolidado foi:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{n = 45}
+    \item \textbf{Spearman Rho = 0.14}
+\end{itemize}
+
+Os resultados por modelo indicaram:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Claude 4.6 Sonnet: correlação positiva fraca;
+    \item Gemini 3.0: correlação positiva fraca, ligeiramente maior do que a de Claude;
+    \item GPT-5.4 Thinking: variância zero nas notas, resultando em \texttt{NaN} para Spearman.
+\end{itemize}
+
+O caso do GPT merece interpretação específica: receber a mesma nota em todas as respostas significa alta homogeneidade do julgamento, o que pode ser entendido como consistência clínica segundo a rubrica utilizada. Em termos estatísticos, contudo, a ausência de variação inviabiliza o cálculo do coeficiente de Spearman.
+
+\subsection{Leitura metodológica dos resultados}
+
+O juiz \texttt{llama-3.3-70b-versatile} mostrou-se mais rigoroso do que a avaliação humana inicial, especialmente quando a resposta candidata apresentava omissões relevantes de segurança, condutas pouco específicas ou baixa aderência ao padrão-ouro. Isso é coerente com o fato de a rubrica priorizar risco clínico acima de fluidez textual.
+
+Portanto, uma correlação global modesta não deve ser interpretada automaticamente como falha do sistema, mas como indício de que o juiz automatizado operou com um padrão de segurança mais conservador.
+
+\subsection{Arquivos gerados na pasta outputs}
+
+A versão final da pasta \texttt{outputs/} deve conter quatro arquivos, resumidos na Tabela~\ref{tab:outputs}.
+
+\begin{longtable}{>{\RaggedRight\arraybackslash}p{0.30\textwidth} >{\RaggedRight\arraybackslash}p{0.62\textwidth}}
+\caption{Arquivos finais gerados em \texttt{outputs/}}\label{tab:outputs}\\
+\toprule
+\textbf{Arquivo} & \textbf{Descrição} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Arquivo} & \textbf{Descrição} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\path{avaliacoes_juiz.csv} & exportação bruta das notas, justificativas e metadados do juiz. \\
+\path{pares_humano_vs_juiz.csv} & pares consolidados para comparação estatística entre avaliação humana e avaliação automatizada. \\
+\path{correlacao_spearman.csv} & resultado agregado das correlações calculadas em diferentes níveis. \\
+\path{analise_erros.csv} & casos relevantes de divergência entre avaliação humana e juiz, úteis para análise qualitativa. \\
+\end{longtable}
+
 \section{Queries de análise}
 
-Exemplos de queries:
-\begin{itemize}[leftmargin=1.1cm]
-    \item contagem de perguntas por dataset;
+Além dos scripts Python, o projeto inclui um conjunto de consultas SQL em \texttt{03\_queries\_analise.sql}. Essas consultas foram pensadas para auditoria manual e inspeção direta do banco, permitindo obter respostas como:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item quantidade de perguntas por dataset;
     \item total de respostas por modelo candidato;
     \item média das notas do juiz por modelo;
     \item pares humano versus juiz;
-    \item casos com possível falha do juiz.
+    \item casos em que o juiz divergiu da avaliação humana. 
 \end{itemize}
 
-\section{Backup do banco}
+Essas queries funcionam como camada de verificação independente em relação aos scripts Python, reforçando a auditabilidade do experimento.
 
-Geração do backup:
-\begin{lstlisting}
+\section{Backup e restore}
+
+\subsection{Backup}
+
+O backup final do experimento foi gerado com:
+
+\begin{lstlisting}[caption={Geracao do backup final}]
 pg_dump -U postgres -d atividade2_med -f backup/backup_atividade_2.sql
 \end{lstlisting}
 
-\section{Restore do banco}
+Esse arquivo garante a reconstituição completa do banco, incluindo schema, dados e avaliações persistidas.
 
-Para recriar o banco localmente:
-\begin{lstlisting}
+\subsection{Restore}
+
+O restore foi testado em um banco separado, chamado \texttt{atividade2\_med\_restore}, por meio dos comandos:
+
+\begin{lstlisting}[caption={Restore do experimento em banco separado}]
 createdb -U postgres atividade2_med_restore
 psql -U postgres -d atividade2_med_restore -f backup/backup_atividade_2.sql
 \end{lstlisting}
 
-\section{Checklist de auditoria}
+Após o restore, as contagens essenciais do banco restaurado coincidiram com a base original, demonstrando que o experimento pode ser reconstruído localmente de forma íntegra.
 
-Antes da entrega final, verificar:
-\begin{itemize}[leftmargin=1.1cm]
-    \item se o banco contém os dados esperados;
-    \item se as chaves estrangeiras estão preservadas;
-    \item se o backup restaura corretamente;
-    \item se os scripts executam sem erro;
-    \item se as queries principais funcionam;
-    \item se o vídeo e o README estão atualizados.
+\section{Checklist final de auditoria}
+
+Antes da entrega final, devem ser verificados os seguintes itens:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item o banco \texttt{atividade2\_med} foi criado e populado corretamente;
+    \item os scripts SQL de schema e seed executaram sem erro;
+    \item o ETL migrou corretamente os dados da Atividade 1;
+    \item o juiz real foi executado via backend \texttt{custom};
+    \item os registros de teste foram removidos antes da correlação final;
+    \item os quatro arquivos finais da pasta \texttt{outputs/} estão presentes;
+    \item o backup foi gerado com \texttt{pg\_dump};
+    \item o restore foi validado em \texttt{atividade2\_med\_restore};
+    \item o README e o vídeo refletem a versão final com juiz real.
 \end{itemize}
 
 \section{Conclusão}
 
-A Atividade 2 transforma os artefatos da Atividade 1 em um experimento auditável e escalável, permitindo armazenar, julgar e analisar respostas de modelos em um domínio crítico. O uso de PostgreSQL e do paradigma LLM-as-a-Judge reforça a rastreabilidade dos resultados e a capacidade de auditoria do processo de avaliação.
+A Atividade 2 consolidou os artefatos da Atividade 1 em um framework auditável de avaliação semântica com persistência em banco relacional. A adoção de PostgreSQL garantiu rastreabilidade, integridade e capacidade de inspeção dos resultados; a adoção de um juiz neutro real via Groq tornou o pipeline metodologicamente mais robusto; e a geração de outputs, backup e restore assegurou reprodutibilidade.
+
+A principal contribuição desta implementação final está em demonstrar que um experimento de \textit{LLM-as-a-Judge} pode ser estruturado com rigor de Engenharia de Software, contemplando modelagem relacional, scripts de ETL, avaliação automatizada auditável, análise estatística e restauração completa do ambiente experimental.
 
 \end{document}
