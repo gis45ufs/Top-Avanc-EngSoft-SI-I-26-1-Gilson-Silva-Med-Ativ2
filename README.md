@@ -1,23 +1,28 @@
-# Atividade 2 — LLM-as-a-Judge com PostgreSQL no Domínio Médico
+# 🏥 Atividade 2 — LLM-as-a-Judge com PostgreSQL no Domínio Médico
 
-Esta é a implementação final da **Atividade 2** da disciplina **Tópicos Avançados em Engenharia de Software e SI I**.
+> **🚀 Demonstração ao Vivo:** Acesse o **[Medical Judge Explorer](https://medical-judge-explorer.vercel.app/)** para interagir com o dashboard visual que consolida os dados e insights gerados por esta arquitetura.
 
-O projeto foca na transição de avaliações heurísticas para um framework de auditoria semântica robusto, utilizando o paradigma **LLM-as-a-Judge** com persistência em **PostgreSQL**.
-
-A proposta central é transformar os artefatos da Atividade 1 em uma infraestrutura auditável, reprodutível e escalável, capaz de armazenar datasets, respostas candidatas, avaliações humanas, avaliações automatizadas e métricas estatísticas de concordância.
+| Informação Acadêmica | Detalhes |
+| :--- | :--- |
+| **Discente** | Gilson Inácio da Silva |
+| **Matrícula** | 202611005730 |
+| **Programa** | Pós-Graduação em Ciência da Computação |
+| **Disciplina** | Tópicos Avançados em Engenharia de Software e SI I |
+| **Equipe** | Equipe 2 - Medicina |
 
 ---
 
-## 🎯 Objetivo
+## 🎯 Sobre o Projeto e Objetivos
 
-Transformar os artefatos da [Atividade 1](https://github.com/gis45ufs/Top-Avanc-EngSoft-SI-I-26-1-Gilson-Inacio-Silva-Med-Ativ1) em uma infraestrutura auditável, rastreável e escalável, capaz de:
+Esta é a implementação final da **Atividade 2**. O projeto consolida a transição de um modelo de avaliações heurísticas para um framework robusto de auditoria semântica, utilizando o paradigma **LLM-as-a-Judge** com persistência em banco de dados relacional.
 
-- **Persistência Relacional:** armazenar datasets, questões, respostas candidatas, modelos avaliados e avaliações no PostgreSQL.
-- **Auditoria Semântica Real:** implementar um **Juiz Neutro** para avaliar acurácia técnica, segurança clínica e alinhamento ao Gold Standard.
-- **Análise de Raciocínio:** persistir justificativas estruturadas do juiz para permitir auditoria humana posterior.
-- **Validação Estatística:** calcular a concordância entre avaliação humana e avaliação por IA via **Correlação de Spearman**.
-- **Reprodutibilidade:** garantir o ciclo completo de execução, documentação, backup e restore do experimento.
-- **Rastreabilidade:** manter histórico dos dados, scripts, prompts, resultados e relatórios gerados.
+O objetivo central desta etapa foi transformar os artefatos experimentais produzidos na [Atividade 1](https://github.com/gis45ufs/Top-Avanc-EngSoft-SI-I-26-1-Gilson-Inacio-Silva-Med-Ativ1) em uma infraestrutura auditável, rastreável e escalável, capaz de prover:
+
+- **Persistência Relacional (PostgreSQL):** Modelagem e armazenamento de datasets, questões, respostas candidatas e logs de avaliação.
+- **Auditoria Semântica Real:** Implementação do Medical Judge para avaliar criticamente a acurácia técnica, a segurança clínica e o alinhamento com o *Gold Standard*.
+- **Transparência de Raciocínio:** Persistência estruturada das justificativas (o *reasoning*) geradas pelo Juiz, viabilizando futuras auditorias humanas.
+- **Validação Estatística:** Cálculo de concordância metodológica entre avaliações humanas e de IA utilizando a **Correlação de Spearman**.
+- **Engenharia de Dados (ETL):** Automatização do fluxo ponta a ponta (extração, avaliação e carga), com rotinas de backup e restore para garantir reprodutibilidade.
 
 ---
 
@@ -60,7 +65,7 @@ O pipeline final foi executado sobre um recorte individual de **45 amostras**, c
 
 ---
 
-## 🤖 Arquitetura do Juiz — Neutral Judge
+## 🤖 Arquitetura — Medical Judge
 
 Diferente das versões iniciais que utilizavam um backend mock/teste, esta implementação utiliza um modelo de **Juiz Neutro** de alta capacidade.
 
@@ -220,7 +225,7 @@ As correlações por modelo indicam variações no grau de alinhamento entre ava
 
 ### Nota metodológica
 
-A correlação observada demonstra que o **Juiz Neutro** foi mais rigoroso do que a avaliação humana inicial, especialmente em critérios de segurança clínica.
+A correlação observada demonstra que o Medical Judge foi mais rigoroso do que a avaliação humana inicial, especialmente em critérios de segurança clínica.
 
 No domínio médico, essa divergência é metodologicamente relevante, pois respostas aparentemente completas podem apresentar riscos quando omitem alertas, contraindicações, diagnósticos diferenciais, limites de segurança ou necessidade de avaliação profissional.
 
@@ -352,7 +357,7 @@ psql -U postgres -d atividade2_med_restore -f backup/backup_atividade_2.sql
 
 A solução implementada permite verificar:
 
-- se os dados da Atividade 1 foram corretamente migrados para o PostgreSQL;
+- se os dados da [Atividade 1](https://github.com/gis45ufs/Top-Avanc-EngSoft-SI-I-26-1-Gilson-Inacio-Silva-Med-Ativ1) foram corretamente migrados para o PostgreSQL;
 - se as avaliações foram persistidas em tabelas relacionais;
 - se os resultados do juiz foram gerados por backend real, e não por mock;
 - se os registros de teste foram removidos antes da análise final;
